@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HPCSA Clinical Tools</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        section {
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            margin: 0 0 10px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background: #333;
+            color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>HPCSA Clinical Decision Support Tools</h1>
+    </header>
+    <main>
+        <!-- Login Section -->
+        <section id="login">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p id="loginError" style="color: red; display: none;"></p>
+        </section>
+
+        <!-- Registration Validation Section -->
+        <section id="validation">
+            <h2>Validate Registration</h2>
+            <form id="validateForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" placeholder="E.g., John Doe" required>
+                <label for="registration">HPCSA Registration Number:</label>
+                <input type="text" id="registration" placeholder="E.g., PR1234567" required>
+                <button type="submit">Validate</button>
+            </form>
+            <p id="validationError" style="color: red; display: none;"></p>
+            <p id="validationSuccess" style="color: green; display: none;"></p>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 HPCSA Clinical Tools</p>
+    </footer>
+
+    <script>
+        $(document).ready(function () {
+            // Login Form Handler
+            $("#loginForm").submit(function (e) {
+                e.preventDefault();
+                const username = $("#username").val().trim();
+                const password = $("#password").val().trim();
+
+                if (username === "admin" && password === "password123") {
+                    alert("Login successful!");
+                } else {
+                    $("#loginError").text("Invalid username or password.").fadeIn();
+                }
+            });
+
+            // Registration Validation
+            $("#validateForm").submit(function (e) {
+                e.preventDefault();
+                const registration = $("#registration").val().trim();
+
+                if (!/^PR\d{7}$/.test(registration)) {
+                    $("#validationError").text("Invalid registration number format. Use 'PR1234567'.").fadeIn();
+                    $("#validationSuccess").fadeOut();
+                } else {
+                    $.ajax({
+                        url: "https://hpcsaonline.custhelp.com/app/i_reg_form",
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        data: JSON.stringify({ registration }),
+                        success: function () {
+                            $("#validationSuccess").text("Registration validated successfully!").fadeIn();
+                            $("#validationError").fadeOut();
+                        },
+                        error: function () {
+                            $("#validationError").text("Registration not found. Please check your details.").fadeIn();
+                            $("#validationSuccess").fadeOut();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
